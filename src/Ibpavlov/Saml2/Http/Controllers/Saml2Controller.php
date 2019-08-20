@@ -1,25 +1,25 @@
 <?php
 
-namespace Aacotroneo\Saml2\Http\Controllers;
+namespace Ibpavlov\Saml2\Http\Controllers;
 
-use Aacotroneo\Saml2\Events\Saml2LoginEvent;
-use Aacotroneo\Saml2\Saml2Auth;
-use Illuminate\Routing\Controller;
+use Ibpavlov\Saml2\Events\Saml2LoginEvent;
+use Ibpavlov\Saml2\Saml2Auth;
 use Illuminate\Http\Request;
-use OneLogin\Saml2\Auth as OneLogin_Saml2_Auth;
-use URL;
 
-class Saml2Controller extends Controller
+class Saml2Controller extends \Laravel\Lumen\Routing\Controller
 {
-
+    /** @var Saml2Auth */
     protected $saml2Auth;
-
+    /** @var string */
     protected $idp;
 
     /**
+     * @param Request $request
+     * @throws \Exception
      */
-    function __construct(){
-        $idpName = request()->route('idpName');
+    function __construct(Request $request)
+    {
+        $idpName = $request->route('idpName');
         if (!in_array($idpName, config('saml2_settings.idpNames'))) {
             abort(404);
         }

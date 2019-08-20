@@ -1,9 +1,8 @@
 <?php
-namespace Aacotroneo\Saml2;
 
-use OneLogin\Saml2\Auth as OneLogin_Saml2_Auth;
+namespace Ibpavlov\Saml2;
+
 use OneLogin\Saml2\Utils as OneLogin_Saml2_Utils;
-use URL;
 use Illuminate\Support\ServiceProvider;
 
 class Saml2ServiceProvider extends ServiceProvider
@@ -23,14 +22,9 @@ class Saml2ServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(config('saml2_settings.useRoutes', false) == true ){
+        if (config('saml2_settings.useRoutes', false) == true) {
             include __DIR__ . '/../../routes.php';
         }
-
-        $this->publishes([
-            __DIR__.'/../../config/saml2_settings.php' => config_path('saml2_settings.php'),
-            __DIR__.'/../../config/test_idp_settings.php' => config_path('saml2'.DIRECTORY_SEPARATOR.'test_idp_settings.php'),
-        ]);
 
         if (config('saml2_settings.proxyVars', false)) {
             OneLogin_Saml2_Utils::setProxyVars(true);
@@ -53,7 +47,7 @@ class Saml2ServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array();
+        return [];
     }
 
 }

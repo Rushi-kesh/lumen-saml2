@@ -6,7 +6,7 @@ A Lumen package for Saml2 integration as a SP (service provider) based on  [OneL
 
 The aim of this library is to be as simple as possible. We won't mess with Laravel users, auth, session...  We prefer to limit ourselves to a concrete task. Ask the user to authenticate at the IDP and process the response. Same case for SLO requests.
 
-Forked from "aacotroneo/laravel-saml2" and updated to work with Lumen
+Forked from "ibpavlov/laravel-saml2" and updated to work with Lumen
 
 ## Installation - Composer
 
@@ -27,7 +27,7 @@ Apply configuration files and register the service in bootstrap/app.php:
 
 ```php
 $app->configure('saml2_settings');
-$app->configure('saml2');
+$app->configure('saml2_test');
 
 $app->register(Ibpavlov\Saml2\Saml2ServiceProvider::class);
 ```

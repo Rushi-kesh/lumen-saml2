@@ -1,11 +1,15 @@
 {
-    "name": "aacotroneo/laravel-saml2",
-    "description": "A Laravel package for Saml2 integration as a SP (service provider) for multiple IdPs, based on OneLogin toolkit which is much more lightweight than simplesamlphp.",
-    "keywords": ["laravel","saml", "saml2", "onelogin"],
-    "homepage": "https://github.com/aacotroneo/laravel-saml2",
+    "name": "ibpavlov/lumen-saml2",
+    "description": "A Lumen package for Saml2 integration as a SP (service provider) for multiple IdPs, based on OneLogin toolkit which is much more lightweight than simplesamlphp (Forked from aacotroneo/laravel-saml2).",
+    "keywords": ["lumen","laravel","saml", "saml2", "onelogin"],
+    "homepage": "https://github.com/ibpavlov/lumen-saml2",
     "license": "MIT",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "authors": [
+        {
+            "name": "ibpavlov",
+            "email": "ibpavlov@gmail.com"
+        },
         {
             "name": "aacotroneo",
             "email": "aacotroneo@gmail.com"
@@ -19,6 +23,8 @@
         "php": ">=5.4.0",
         "ext-openssl": "*",
         "illuminate/support": ">=5.0.0",
+        "illuminate/contracts": ">=5.0.0",
+        "illuminate/http": ">=5.0.0",
         "onelogin/php-saml": "^3.0.0"
     },
     "require-dev": {
@@ -27,14 +33,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Aacotroneo\\Saml2\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Aacotroneo\\Saml2\\Saml2ServiceProvider"
-            ]
+            "Ibpavlov\\Saml2\\": "src/"
         }
     },
     "minimum-stability": "stable"

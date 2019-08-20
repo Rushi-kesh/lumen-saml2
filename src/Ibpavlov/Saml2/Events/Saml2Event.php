@@ -1,9 +1,9 @@
 <?php
 
-namespace Aacotroneo\Saml2\Events;
+namespace Ibpavlov\Saml2\Events;
 
-class Saml2Event {
-
+class Saml2Event
+{
     protected $idp;
 
     function __construct($idp)

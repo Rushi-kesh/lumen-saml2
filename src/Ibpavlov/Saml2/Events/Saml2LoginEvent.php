@@ -1,12 +1,12 @@
 <?php
 
-namespace Aacotroneo\Saml2\Events;
+namespace Ibpavlov\Saml2\Events;
 
-use Aacotroneo\Saml2\Saml2User;
-use Aacotroneo\Saml2\Saml2Auth;
+use Ibpavlov\Saml2\Saml2User;
+use Ibpavlov\Saml2\Saml2Auth;
 
-class Saml2LoginEvent extends Saml2Event {
-
+class Saml2LoginEvent extends Saml2Event
+{
     protected $user;
     protected $auth;
 
