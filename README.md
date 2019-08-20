@@ -4,9 +4,9 @@
 
 A Lumen package for Saml2 integration as a SP (service provider) based on  [OneLogin](https://github.com/onelogin/php-saml) toolkit, which is much lighter and easier to install than simplesamlphp SP. It doesn't need separate routes or session storage to work!
 
-The aim of this library is to be as simple as possible. We won't mess with Laravel users, auth, session...  We prefer to limit ourselves to a concrete task. Ask the user to authenticate at the IDP and process the response. Same case for SLO requests.
+The aim of this library is to be as simple as possible. We won't mess with Lumen users, auth, session...  We prefer to limit ourselves to a concrete task. Ask the user to authenticate at the IDP and process the response. Same case for SLO requests.
 
-Forked from "ibpavlov/laravel-saml2" and updated to work with Lumen
+Forked from "aacotroneo/laravel-saml2" and updated to work with Lumen
 
 ## Installation - Composer
 
@@ -44,7 +44,7 @@ Define names of all the IDPs you want to configure in saml2_settings.php. Option
     'idpNames' => ['test', 'myidp1', 'myidp2'],
 ```
 
-#### Configure laravel-saml2 to know about each IDP
+#### Configure lumen-saml2 to know about each IDP
 
 You will need to create a separate configuration file for each IDP under `app/config/saml2/` folder. e.g. `myidp1_idp_settings.php`. You can use `test_idp_settings.php` as the starting point; just copy it and rename it.
 
@@ -71,12 +71,12 @@ You can check the actual routes in the metadata, by navigating to 'http(s)://lar
 If you configure the optional `routesPrefix` setting in saml2_settings.php, then all idp routes will be prefixed by that value, so you'll need to adjust the metadata url accordingly. For example, if you configure routesPrefix to be `'single_sign_on'`, then your IDP metadata for myidp1 will be found at http://laravel_url/single_sign_on/myidp1/metadata.
 
 #### Example: simplesamlphp IDP configuration
-If you use simplesamlphp as a test IDP, and your SP metadata url is `http://laravel_url/myidp1/metadata`, add the following to /metadata/sp-remote.php to inform the IDP of your laravel-saml2 SP identity:
+If you use simplesamlphp as a test IDP, and your SP metadata url is `http://laravel_url/myidp1/metadata`, add the following to /metadata/sp-remote.php to inform the IDP of your lumen-saml2 SP identity:
 
 ```php
-$metadata['http://laravel_url/myidp1/metadata'] = array(
-    'AssertionConsumerService' => 'http://laravel_url/myidp1/acs',
-    'SingleLogoutService' => 'http://laravel_url/myidp1/sls',
+$metadata['http://lumen_url/myidp1/metadata'] = array(
+    'AssertionConsumerService' => 'http://Lumen_url/myidp1/acs',
+    'SingleLogoutService' => 'http://Lumen_url/myidp1/sls',
     //the following two affect what the $Saml2user->getUserId() will return
     'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
     'simplesaml.nameidattribute' => 'uid' 
@@ -155,9 +155,9 @@ After login is called, the user will be redirected to the IDP login page. Then t
                 'attributes' => $user->getAttributes(),
                 'assertion' => $user->getRawSamlAssertion()
             ];
-             $laravelUser = //find user by ID or attribute
+             $LumenUser = //find user by ID or attribute
              //if it does not exist create it and go on  or show an error message
-             Auth::login($laravelUser);
+             Auth::login($LumenUser);
         });
 
 ```
@@ -188,7 +188,7 @@ And in `config/saml2_settings.php` :
 ```
     /**
      * which middleware group to use for the saml routes
-     * Laravel 5.2 will need a group which includes StartSession
+     * Lumen 5.2 will need a group which includes StartSession
      */
     'routesMiddleware' => ['saml'],
 ```
