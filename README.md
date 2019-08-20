@@ -1,36 +1,37 @@
-## Laravel 5 - Saml2
+## Lumen 5+ - Saml2
 
-[![Build Status](https://travis-ci.org/aacotroneo/laravel-saml2.svg)](https://travis-ci.org/aacotroneo/laravel-saml2)
+[![Build Status](https://travis-ci.org/ibpavlov/lumen-saml2.svg)](https://travis-ci.org/ibpavlov/lumen-saml2)
 
-A Laravel package for Saml2 integration as a SP (service provider) based on  [OneLogin](https://github.com/onelogin/php-saml) toolkit, which is much lighter and easier to install than simplesamlphp SP. It doesn't need separate routes or session storage to work!
+A Lumen package for Saml2 integration as a SP (service provider) based on  [OneLogin](https://github.com/onelogin/php-saml) toolkit, which is much lighter and easier to install than simplesamlphp SP. It doesn't need separate routes or session storage to work!
 
 The aim of this library is to be as simple as possible. We won't mess with Laravel users, auth, session...  We prefer to limit ourselves to a concrete task. Ask the user to authenticate at the IDP and process the response. Same case for SLO requests.
+
+Forked from "aacotroneo/laravel-saml2" and updated to work with Lumen
 
 ## Installation - Composer
 
 You can install the package via composer:
 
 ```
-composer require aacotroneo/laravel-saml2
+composer require ibpavlov/lumen-saml2
 ```
 Or manually add this to your composer.json:
 
 ```json
-"aacotroneo/laravel-saml2": "*"
+"ibpavlov/lumen-saml2": "*"
 ```
 
-If you are using Laravel 5.5 and up, the service provider will automatically get registered.
+Then copy config files from `vendor/ibpavlov/lumen-saml2/config` to `config` folder. Then customize new files to match your configurations.
 
-For older versions of Laravel (<5.5), you have to add the service provider to config/app.php:
+Apply configuration files and register the service in bootstrap/app.php:
 
 ```php
-'providers' => [
-        ...
-    	Aacotroneo\Saml2\Saml2ServiceProvider::class,
-]
+$app->configure('saml2_settings');
+$app->configure('saml2');
+
+$app->register(Ibpavlov\Saml2\Saml2ServiceProvider::class);
 ```
 
-Then publish the config files with `php artisan vendor:publish --provider="Aacotroneo\Saml2\Saml2ServiceProvider"`. This will add the files `app/config/saml2_settings.php` & `app/config/saml2/test_idp_settings.php`, which you will need to customize.
 
 The test_idp_settings.php config is handled almost directly by  [OneLogin](https://github.com/onelogin/php-saml) so you should refer to that for full details, but we'll cover here what's really necessary. There are some other config about routes you may want to check, they are pretty strightforward.
 
@@ -106,7 +107,7 @@ public function handle($request, Closure $next)
 }
 ```
 
-Since Laravel 5.3, you can change your unauthenticated method in ```app/Exceptions/Handler.php```.
+Since Lumen 5.3, you can change your unauthenticated method in ```app/Exceptions/Handler.php```.
 ```php
 protected function unauthenticated($request, AuthenticationException $exception)
 {
@@ -128,7 +129,7 @@ E.g.
 ```
 **MySaml2Controller.php**
 ```php
-use Aacotroneo\Saml2\Http\Controllers\Saml2Controller;
+use Ibpavlov\Saml2\Http\Controllers\Saml2Controller;
 
 class MySaml2Controller extends Saml2Controller
 {
@@ -144,7 +145,7 @@ After login is called, the user will be redirected to the IDP login page. Then t
 
 ```php
 
- Event::listen('Aacotroneo\Saml2\Events\Saml2LoginEvent', function (Saml2LoginEvent $event) {
+ Event::listen('Ibpavlov\Saml2\Events\Saml2LoginEvent', function (Saml2LoginEvent $event) {
             $messageId = $event->getSaml2Auth()->getLastMessageId();
             // Add your own code preventing reuse of a $messageId to stop replay attacks
 
@@ -162,7 +163,7 @@ After login is called, the user will be redirected to the IDP login page. Then t
 ```
 ### Auth persistence
 
-Be careful about necessary Laravel middleware for Auth persistence in Session.
+Be careful about necessary Lumen middleware for Auth persistence in Session.
 
 For exemple, it can be:
 
@@ -204,7 +205,7 @@ For case 2 you will only receive the event. Both cases 1 and 2 receive the same 
 Note that for case 2, you may have to manually save your session to make the logout stick (as the session is saved by middleware, but the OneLogin library will redirect back to your IDP before that happens)
 
 ```php
-        Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
+        Event::listen('Ibpavlov\Saml2\Events\Saml2LogoutEvent', function ($event) {
             Auth::logout();
             Session::save();
         });
