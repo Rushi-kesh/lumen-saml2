@@ -5,6 +5,8 @@ namespace Ibpavlov\Saml2\Http\Controllers;
 use Ibpavlov\Saml2\Events\Saml2LoginEvent;
 use Ibpavlov\Saml2\Saml2Auth;
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Session\Store;
 
 class Saml2Controller extends \Laravel\Lumen\Routing\Controller
 {
@@ -35,26 +37,27 @@ class Saml2Controller extends \Laravel\Lumen\Routing\Controller
      */
     public function metadata()
     {
-
         $metadata = $this->saml2Auth->getMetadata();
-
         return response($metadata, 200, ['Content-Type' => 'text/xml']);
     }
 
     /**
      * Process an incoming saml2 assertion request.
      * Fires 'Saml2LoginEvent' event if a valid user is Found
+     * @param Logger $log
+     * @param Store $session
+     * @return \Illuminate\Http\RedirectResponse|\Laravel\Lumen\Http\Redirector
      */
-    public function acs()
+    public function acs(Logger $log, Store $session)
     {
         $errors = $this->saml2Auth->acs();
 
         if (!empty($errors)) {
-            logger()->error('Saml2 error_detail', ['error' => $this->saml2Auth->getLastErrorReason()]);
-            session()->flash('saml2_error_detail', [$this->saml2Auth->getLastErrorReason()]);
+            $log->error('Saml2 error_detail', ['error' => $this->saml2Auth->getLastErrorReason()]);
+            $session->flash('saml2_error_detail', [$this->saml2Auth->getLastErrorReason()]);
 
-            logger()->error('Saml2 error', $errors);
-            session()->flash('saml2_error', $errors);
+            $log->error('Saml2 error', $errors);
+            $session->flash('saml2_error', $errors);
             return redirect(config('saml2_settings.errorRoute'));
         }
         $user = $this->saml2Auth->getSaml2User();
@@ -75,13 +78,17 @@ class Saml2Controller extends \Laravel\Lumen\Routing\Controller
      * Process an incoming saml2 logout request.
      * Fires 'Saml2LogoutEvent' event if its valid.
      * This means the user logged out of the SSO infrastructure, you 'should' log him out locally too.
+     * @param Logger $log
+     * @param Store $session
+     * @return \Illuminate\Http\RedirectResponse|\Laravel\Lumen\Http\Redirector
+     * @throws \Exception
      */
-    public function sls()
+    public function sls(Logger $log, Store $session)
     {
         $errors = $this->saml2Auth->sls($this->idp, config('saml2_settings.retrieveParametersFromServer'));
         if (!empty($errors)) {
-            logger()->error('Saml2 error', $errors);
-            session()->flash('saml2_error', $errors);
+            $log->error('Saml2 error', $errors);
+            $session->flash('saml2_error', $errors);
             throw new \Exception("Could not log out");
         }
 
@@ -90,6 +97,8 @@ class Saml2Controller extends \Laravel\Lumen\Routing\Controller
 
     /**
      * This initiates a logout request across all the SSO infrastructure.
+     * @param Request $request
+     * @throws \OneLogin\Saml2\Error
      */
     public function logout(Request $request)
     {

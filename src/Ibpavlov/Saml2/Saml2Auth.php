@@ -7,13 +7,13 @@ use OneLogin\Saml2\Error as OneLogin_Saml2_Error;
 use Ibpavlov\Saml2\Events\Saml2LogoutEvent;
 
 use Psr\Log\InvalidArgumentException;
-use URL;
+use Illuminate\Support\Facades\URL;
 
 class Saml2Auth
 {
 
     /**
-     * @var \OneLogin_Saml2_Auth
+     * @var OneLogin_Saml2_Auth
      */
     protected $auth;
 
@@ -164,6 +164,10 @@ class Saml2Auth
     /**
      * Process a Saml response (assertion consumer service)
      * returns an array with errors if it can not logout
+     * @param $idp
+     * @param bool $retrieveParametersFromServer
+     * @return array|null
+     * @throws OneLogin_Saml2_Error
      */
     function sls($idp, $retrieveParametersFromServer = false)
     {
@@ -221,6 +225,11 @@ class Saml2Auth
     }
 
 
+    /**
+     * @param string $path
+     * @return mixed|string
+     * @throws \Exception
+     */
     protected static function extractPkeyFromFile($path)
     {
         $res = openssl_get_privatekey($path);
@@ -232,6 +241,11 @@ class Saml2Auth
         return self::extractOpensslString($pkey, 'PRIVATE KEY');
     }
 
+    /**
+     * @param string $path
+     * @return mixed|string
+     * @throws \Exception
+     */
     protected static function extractCertFromFile($path)
     {
         $res = openssl_x509_read(file_get_contents($path));
@@ -243,6 +257,11 @@ class Saml2Auth
         return self::extractOpensslString($cert, 'CERTIFICATE');
     }
 
+    /**
+     * @param string $keyString
+     * @param string $delimiter
+     * @return mixed|string
+     */
     protected static function extractOpensslString($keyString, $delimiter)
     {
         $keyString = str_replace(["\r", "\n"], "", $keyString);

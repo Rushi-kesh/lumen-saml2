@@ -2,6 +2,7 @@
 
 namespace Ibpavlov\Saml2;
 
+use Laravel\Lumen\Routing\UrlGenerator;
 use OneLogin\Saml2\Auth as OneLogin_Saml2_Auth;
 
 /**
@@ -14,6 +15,10 @@ class Saml2User
 
     protected $auth;
 
+    /**
+     * Saml2User constructor.
+     * @param OneLogin_Saml2_Auth $auth
+     */
     function __construct(OneLogin_Saml2_Auth $auth)
     {
         $this->auth = $auth;
@@ -71,16 +76,19 @@ class Saml2User
         return app('request')->input('SAMLResponse'); //just this request
     }
 
+    /**
+     * @return null|string
+     */
     function getIntendedUrl()
     {
         $relayState = app('request')->input('RelayState'); //just this request
 
-        $url = app('Illuminate\Contracts\Routing\UrlGenerator');
+        $url = app(UrlGenerator::class);
 
         if ($relayState && $url->full() != $relayState) {
-
             return $relayState;
         }
+        return null;
     }
 
     /**
@@ -115,11 +123,17 @@ class Saml2User
         }
     }
 
+    /**
+     * @return string|null
+     */
     function getSessionIndex()
     {
         return $this->auth->getSessionIndex();
     }
 
+    /**
+     * @return string
+     */
     function getNameId()
     {
         return $this->auth->getNameId();

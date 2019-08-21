@@ -23,6 +23,10 @@ return $settings = [
     // Enable debug mode (to print errors)
     'debug' => env('APP_DEBUG', false),
 
+    // Define base url to your SP base route (e.g. http://localhost/saml2/test/)
+    // If not defined it will try to take it automatically based on our current URL
+    //'baseurl' => env('SAML2_'.$this_idp_env_id.'_BASE_URL'),
+
     // Service Provider Data that we are deploying
     'sp' => [
 
